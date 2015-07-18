@@ -57,12 +57,14 @@ module HcitoolsWrapper
               puts Time.now.inspect + ':  ' + h.inspect
               puts "max: %s, min: %s, average: %s, a: %s" % \
                                       [a.max, a.min, avg, a.sort.inspect]
-              puts 'changed!' if avg != a.max + (a.min - a.max) / 2
+
             end
 
             # the RSSI will vary by up to 10 when the device is stationary
             if a.length > 10 or rssi > (a.max + 10) or rssi < (a.min - 10) then
 
+              puts 'changed!' if @verbose
+              
               if block_given? then
                 yield a, avg
               end
