@@ -13,13 +13,18 @@ module HcitoolsWrapper
     #
     def self.start(runinterval: 10, scanduration: 2)
 
-      RunEvery.new(seconds: runinterval) do
+      interval, duration = runinterval, scanduration
+      RunEvery.new(seconds: interval) do
         pid = spawn("sudo hcitool lescan", :err=>"log")
-        sleep scanduration
+        sleep duration
         `sudo hciconfig hci0 reset `
       end
 
     end
+    
+    at_exit do      
+      `sudo hciconfig hci0 reset `
+    end        
 
   end
 
