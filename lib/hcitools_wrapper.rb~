@@ -21,6 +21,10 @@ module HcitoolsWrapper
       end
 
     end
+    
+    at_exit do      
+      `sudo hciconfig hci0 reset `
+    end        
 
   end
 

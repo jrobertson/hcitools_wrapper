@@ -11,7 +11,7 @@ module HcitoolsWrapper
 
     # options interval and duration are in seconds
     #
-    def self.start(runinterval: 10, scanduration: 2)
+    def self.start(runinterval: 20, scanduration: 2)
 
       interval, duration = runinterval, scanduration
       RunEvery.new(seconds: interval) do
@@ -41,7 +41,7 @@ module HcitoolsWrapper
     def start()
 
       id = @bd_address.split(':').reverse.join(' ')
-      found = false
+      found, last_found = false, Time.now - 60
       a = []
 
       t3 = Time.now + @interval
@@ -54,7 +54,7 @@ module HcitoolsWrapper
           a << rssi.to_i unless a.include? rssi.to_i
           h = {bdaddress: @bd_address, rssi: rssi.inspect}
 
-          if t3 < Time.now then
+          if t3 <= Time.now then
 
             avg = a.max + (a.min - a.max) / 2
 
@@ -64,11 +64,13 @@ module HcitoolsWrapper
                                       [a.max, a.min, avg, a.sort.inspect]
 
             end
+            
+            recent_movement = Time.now - last_found >= 60
 
             # the RSSI will vary by up to 10 when the device is stationary
-            if a.length > 10 or rssi > (a.max + 10) or rssi < (a.min - 10) then
+            if recent_movement or a.length > 10 or rssi > (a.max + 10) or rssi < (a.min - 10) then
 
-              puts 'changed!' if @verbose
+              puts 'movement!' if @verbose
               
               if block_given? then
                 yield a, avg
@@ -79,6 +81,8 @@ module HcitoolsWrapper
 
             t3 = Time.now + @interval
           end
+          
+          last_found = Time.now
 
           false
 
