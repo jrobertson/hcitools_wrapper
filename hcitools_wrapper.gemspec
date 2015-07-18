@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name = 'hcitools_wrapper'
-  s.version = '0.1.3'
+  s.version = '0.1.4'
   s.summary = 'Uses hcitool lescan + hcidump --raw to fetch the RSSI values from a Bluetooth device address.'
   s.authors = ['James Robertson']
   s.files = Dir['lib/hcitools_wrapper.rb']
