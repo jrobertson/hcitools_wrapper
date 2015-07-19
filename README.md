@@ -1,4 +1,4 @@
-# sing the Hcitools_wrapper gem to scan and return the RSSI value
+# Using the Hcitools_wrapper gem to scan and return the RSSI value
 
 ## Setting up the Bluetooth LE scanner
 
