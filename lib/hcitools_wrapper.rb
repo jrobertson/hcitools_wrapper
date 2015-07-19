@@ -2,8 +2,6 @@
 
 # file: hcitools_wrapper.rb
 
-require 'run_every'
-
 
 module HcitoolsWrapper
 
@@ -12,12 +10,15 @@ module HcitoolsWrapper
     # options interval and duration are in seconds
     #
     def self.start(runinterval: 20, scanduration: 2)
-
-      interval, duration = runinterval, scanduration
-      RunEvery.new(seconds: interval) do
+      
+      while true do
+        
         pid = spawn("sudo hcitool lescan", :err=>"log")
-        sleep duration
-        `sudo hciconfig hci0 reset `
+        sleep scanduration
+        `sudo pkill --signal SIGINT hcitool`
+        
+        sleep runinterval
+        
       end
 
     end
