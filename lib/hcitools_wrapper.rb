@@ -9,22 +9,26 @@ module HcitoolsWrapper
 
     # options interval and duration are in seconds
     #
-    def self.start(runinterval: 20, scanduration: 2)
+    def self.start(runinterval: 8, scanduration: 0.3)
       
       while true do
         
-        pid = spawn("sudo hcitool lescan", :err=>"log")
-        sleep scanduration
-        `sudo pkill --signal SIGINT hcitool`
+        sleep 1
         
-        sleep runinterval
+        `sudo hcitool lescan>result.txt &  
+sleep #{scanduration}
+sudo pkill --signal SIGINT hcitool`
+        
+        sleep runinterval - 1
         
       end
 
     end
     
-    at_exit do      
+    at_exit do
+      
       `sudo hciconfig hci0 reset `
+      puts 'bye'      
     end        
 
   end
@@ -71,7 +75,7 @@ module HcitoolsWrapper
             puts 'movement!' if @verbose
             
             if block_given? then
-              yield( a, rssi == a.min ? rssi : avg)
+              yield( a, (rssi == a.min and rssi < -85) ? rssi : avg)
             end
 
             a = []
